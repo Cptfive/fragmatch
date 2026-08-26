@@ -1,0 +1,31 @@
+{
+  "name": "fragbot-bridge",
+  "version": "0.1.0",
+  "description": "Local Windows companion that securely connects FRAGBOT Flow to Meld Studio.",
+  "main": "src/main.js",
+  "type": "module",
+  "author": "FRAGBOT",
+  "license": "UNLICENSED",
+  "scripts": {
+    "start": "electron .",
+    "test": "node --test",
+    "check": "node --check src/main.js && node --check src/preload.js && node --check src/bridge/meld-client.js && node --check src/bridge/cloud-client.js && node --check src/bridge/command-router.js && node --check src/bridge/qwebchannel.js",
+    "dist:win": "electron-builder --win nsis"
+  },
+  "dependencies": { "ws": "^8.18.3" },
+  "devDependencies": { "electron": "^38.0.0", "electron-builder": "^26.0.12" },
+  "build": {
+    "appId": "tech.fragbot.bridge",
+    "productName": "FRAGBOT Bridge",
+    "asar": true,
+    "files": ["src/**/*", "package.json"],
+    "win": { "target": [{ "target": "nsis", "arch": ["x64"] }] },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "FRAGBOT Bridge"
+    }
+  }
+}
