@@ -7,6 +7,12 @@ on:
     paths:
       - 'tools/fragbot-bridge/**'
       - '.github/workflows/build-fragbot-bridge.yml'
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'tools/fragbot-bridge/**'
+      - '.github/workflows/build-fragbot-bridge.yml'
   workflow_dispatch:
 
 permissions:
