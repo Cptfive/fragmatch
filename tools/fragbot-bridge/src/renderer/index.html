@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'; img-src 'self' data:;">
+  <title>FRAGBOT Bridge</title>
+  <style>
+    :root{color-scheme:dark;font-family:Inter,Segoe UI,system-ui,sans-serif}*{box-sizing:border-box}body{margin:0;background:#080a0f;color:#eef2ff}main{max-width:900px;margin:auto;padding:28px}.top{display:flex;align-items:center;justify-content:space-between;gap:20px;margin-bottom:20px}h1{margin:0;font-size:28px}.muted{color:#9ca3af}.grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}.card{background:#10141d;border:1px solid #232a38;border-radius:14px;padding:18px}.status{display:flex;align-items:center;gap:10px;font-weight:700}.dot{width:10px;height:10px;border-radius:50%;background:#ef4444}.dot.ok{background:#22c55e}.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}input{flex:1;min-width:180px;padding:11px 12px;border-radius:9px;border:1px solid #343c4e;background:#090c12;color:white}button{border:0;border-radius:9px;padding:10px 13px;font-weight:700;cursor:pointer}.secondary{background:#202737;color:#fff}.danger{background:#3b171a;color:#fecaca}.meta{display:grid;grid-template-columns:145px 1fr;gap:6px 12px;font-size:13px;margin-top:12px}.meta b{color:#9ca3af}.logs{margin-top:14px;background:#05070a;border:1px solid #202633;border-radius:10px;padding:12px;height:160px;overflow:auto;font:12px Consolas,monospace;color:#aeb8c8;white-space:pre-wrap}.pair{margin-top:14px}.footer{margin-top:16px;display:flex;justify-content:space-between}.error{color:#fca5a5;min-height:20px;margin-top:8px;font-size:13px}@media(max-width:700px){.grid{grid-template-columns:1fr}}
+  </style>
+</head>
+<body><main>
+<div class="top"><div><h1>FRAGBOT Bridge</h1><div class="muted">FRAGBOT Flow ↔ Meld Studio</div></div><button class="secondary" id="dashboard">Open FRAGBOT</button></div>
+<div class="grid">
+<section class="card"><div class="status"><span class="dot" id="cloudDot"></span><span id="cloudText">FRAGBOT Cloud</span></div><div class="meta"><b>Pairing</b><span id="pairState">Not paired</span><b>Account</b><span id="account">—</span><b>Device</b><span id="device">—</span></div><div class="pair" id="pairPanel"><div class="row"><input id="pairCode" placeholder="Pairing code from fragbot.tech/meld" maxlength="64" autocomplete="off"/><button id="pairBtn">Pair Bridge</button></div><div class="error" id="pairError"></div></div><div class="row pair"><button class="secondary" id="cloudReconnect">Reconnect</button><button class="danger" id="unpair">Unpair</button></div></section>
+<section class="card"><div class="status"><span class="dot" id="meldDot"></span><span id="meldText">Meld Studio</span></div><div class="meta"><b>API version</b><span id="apiVersion">—</span><b>Current scene</b><span id="currentScene">—</span><b>Streaming</b><span id="streaming">No</span><b>Recording</b><span id="recording">No</span></div><div class="row pair"><button class="secondary" id="meldReconnect">Reconnect Meld</button></div></section>
+</div>
+<section class="card" style="margin-top:14px"><strong>Meld resources</strong><div class="meta"><b>Scenes</b><span id="scenes">0</span><b>Layers</b><span id="layers">0</span><b>Audio tracks</b><span id="tracks">0</span><b>Effects</b><span id="effects">0</span></div></section>
+<section class="card" style="margin-top:14px"><strong>Bridge log</strong><div class="logs" id="logs">FRAGBOT Bridge starting…</div></section>
+<div class="footer"><label class="row"><input style="flex:0;width:auto;min-width:auto" type="checkbox" id="autoStart"/> Start with Windows</label><span class="muted" id="version"></span></div>
+</main><script src="./app.js"></script></body></html>
