@@ -1,26 +1,24 @@
-name: Build FRAGBOT Bridge PR Installer
+name: Build FRAGBOT Bridge Windows Installer
 
 on:
-  pull_request:
+  push:
     branches:
       - main
     paths:
-      - 'tools/fragbot-bridge/**'
       - '.github/workflows/build-fragbot-bridge-pr.yml'
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   build-windows:
     runs-on: windows-latest
-    defaults:
-      run:
-        working-directory: tools/fragbot-bridge
     steps:
-      - name: Checkout PR
+      - name: Checkout isolated Bridge branch
         uses: actions/checkout@v4
+        with:
+          ref: build/fragbot-bridge-windows
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
@@ -28,20 +26,31 @@ jobs:
           node-version: '22'
 
       - name: Install dependencies
+        working-directory: tools/fragbot-bridge
         run: npm install --no-audit --no-fund
 
       - name: Validate JavaScript
+        working-directory: tools/fragbot-bridge
         run: npm run check
 
       - name: Build Windows NSIS installer
+        working-directory: tools/fragbot-bridge
         env:
           CSC_IDENTITY_AUTO_DISCOVERY: 'false'
         run: npm run dist:win
 
-      - name: Upload Windows installer
-        uses: actions/upload-artifact@v4
-        with:
-          name: FRAGBOT-Bridge-Windows-v0.1.0
-          path: tools/fragbot-bridge/dist/*.exe
-          if-no-files-found: error
-          retention-days: 30
+      - name: Rename installer
+        shell: pwsh
+        run: |
+          $installer = Get-ChildItem -Path 'tools/fragbot-bridge/dist' -Filter '*.exe' | Where-Object { $_.Name -notlike '*uninstaller*' } | Sort-Object Length -Descending | Select-Object -First 1
+          if ($null -eq $installer) { throw 'No Windows installer found.' }
+          Copy-Item $installer.FullName 'FRAGBOT-Bridge-Setup-v0.1.0.exe'
+
+      - name: Publish prerelease installer
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release delete fragbot-bridge-v0.1.0-build --cleanup-tag --yes 2>$null
+          if ($LASTEXITCODE -ne 0) { $global:LASTEXITCODE = 0 }
+          gh release create fragbot-bridge-v0.1.0-build 'FRAGBOT-Bridge-Setup-v0.1.0.exe' --target build/fragbot-bridge-windows --title 'FRAGBOT Bridge v0.1.0 Build' --notes 'Unsigned Windows installer build for FRAGBOT Bridge / Meld Studio integration.' --prerelease
